@@ -17,14 +17,14 @@ Since this is a child theme of Understrap it uses the understrap's official chil
 1) have installed NodeJS, npm, gulp (the latest two are using NodeJS), we use npm to manage our development dependancies, and gulp to compile sass files into css and other utilities.
 
 2) switch to the theme's directory and run 
- `$ npm install`to install dependancies and after that run 
- `$ gulp copy-assets` to load the configurations to gulp 
- `$ gulp watch` to track changes on sass files, and automatically recompile and minify/unglify them.
+ - `$ npm install`to install dependancies and after that run 
+ - `$ gulp copy-assets` to load the configurations to gulp 
+ - `$ gulp watch` to track changes on sass files, and automatically recompile and minify/unglify them.
 
 3) You add sass styles at `sass/theme/` ,
-modify  `_child_theme_variables.scss` to overwrite bootstrap's global variables. [2]
-add your own sass styles on `_child_theme.scss`.
-your changes will recompile the `css/child-theme.css` and `css/child-theme.min.css` appropriately. the latest is what is the final stylesheet that its loaded.
+- modify  `_child_theme_variables.scss` to overwrite bootstrap's global variables. [2]
+- add your own sass styles on `_child_theme.scss`.
+- your changes will recompile the `css/child-theme.css` and `css/child-theme.min.css` appropriately. the latest is what is the final stylesheet that its loaded.
 
 More on bootstrap theming
 [2] https://getbootstrap.com/docs/4.0/getting-started/theming/
