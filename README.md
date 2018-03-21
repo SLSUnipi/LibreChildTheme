@@ -12,7 +12,7 @@ You can find Understrap here
 [1] https://understrap.com/
 ...or search it and  install it directly through wordpress themes.
 
-## How to modify this theme.
+## How to modify this theme!!!.
 Since this is a child theme of Understrap it uses the understrap's official child template, and has some development dependancies that are not included into the repo. therefore after you clone the repo you need to 
 
 1) have installed NodeJS, npm, gulp (the latest two are using NodeJS), we use npm to manage our development dependancies, and gulp to compile sass files into css and other utilities.
