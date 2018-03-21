@@ -1,5 +1,6 @@
 # Libre Theme
-This is a child theme based on Bootstrap 4, and Understrap wordpress starter theme, that we will use for our website
+This is a child theme based on Bootstrap 4, and Understrap wordpress starter theme.
+"Libre" means freedom, that expresses this theme's goals: An easy to use theme that will give site developers the ability to use reusable widgets made in the bootstrap way without assuming things or requiring "premium versions", a theme that will respect not only  the wordpress and the bootstrap's  way, but the site creator as well, and it will not be needed extra plugins for simple utilities.
 
 ## How to use this child theme.
 Since its a child theme of Understrap:
