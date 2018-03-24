@@ -10446,3 +10446,7 @@ a.skip-link {
 
 .gallery-caption {
   display: block; }
+
+.cover {
+  -o-object-fit: cover;
+     object-fit: cover; }
