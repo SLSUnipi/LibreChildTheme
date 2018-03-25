@@ -19,7 +19,10 @@ class Post_Loop_Widget extends WP_Widget {
             'img_height' => 300,
             'post_type'=>__('any'),
             'category'=>-1,
-            'tags'=>-1
+            'tags'=>-1,
+            'show_excerpt'=>'',
+            'show_img'=>'',
+            'show_cat'=>'',
 		];
 		
 		// Parse current settings with defaults
@@ -33,6 +36,9 @@ class Post_Loop_Widget extends WP_Widget {
         $categories = get_categories([ 'orderby' => 'name', 'order' => 'ASC'] ); //get all categories 
         $category_id = $this->get_field_id('category');
         $tags_id = $this->get_field_id('tags');
+        $show_excerpt_id = $this->get_field_id('show_excerpt');
+        $show_img_id = $this->get_field_id('show_img');
+
         // html template for admin 
         ?>
         <p>
@@ -73,15 +79,27 @@ class Post_Loop_Widget extends WP_Widget {
             <label for=<?=$tags_id?>> <?=__('Display posts of tag(s):')?> </label>
             <input id='<?=$tags_id?>' name='<?=$this->get_field_name('tags')?>' type='text' value='<?=esc_attr( $tags )?>' placeholder='<?=_e('seperate tags with ","')?>'>            
         </p>
-        <!-- img crop -->
         <p>
             <h4> Featured Image </h4>
             </hr>
-			<input id="<?=$img_crop_id?>" name="<?php echo esc_attr( $this->get_field_name( 'img_crop' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $img_crop ); ?> />
+            <!-- show img -->
+            <input id="<?=$show_img_id?>" name="<?php echo esc_attr( $this->get_field_name( 'show_img' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $show_img ); ?> />
+			<label for="<?=$show_img_id?>"><?=__( 'Enable featured image ', 'text_domain' )?></label>
+			<!-- crop img -->
+            <input id="<?=$img_crop_id?>" name="<?php echo esc_attr( $this->get_field_name( 'img_crop' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $img_crop ); ?> />
 			<label for="<?=$img_crop_id?>"><?=__( 'Image Crop', 'text_domain' )?></label>
+            <!--img height -->
             <label for="<?=$img_height_id?>"><?=__( 'Image Height', 'text_domain' )?></label>
 			<input id="<?=$img_height_id?>" name="<?php echo esc_attr( $this->get_field_name( 'img_height' ) ); ?>" type="number" value="<?=esc_attr($img_height)?>"> 
 		</p>
+
+       <p>
+             <h4> Content Options </h4>
+            <!-- enable excerpt --  >
+             <input id="<?=$show_excerpt_id?>" name="<?php echo esc_attr( $this->get_field_name( 'show_excerpt' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $show_excerpt ); ?> />
+			<label for="<?=$show_excerpt_id?>"><?=__( 'Enable excerpt ', 'text_domain' )?></label>
+            </hr>
+        </p>
         <?php
         //end of html template for admin
     }
@@ -90,10 +108,13 @@ class Post_Loop_Widget extends WP_Widget {
         $instance['title'] = !empty($new_instance['title'])? strip_tags($new_instance['title']) :'';
         $instance['cols'] = !empty($new_instance['cols'])?$new_instance['cols']:4;
         $instance['img_crop'] = !empty($new_instance['img_crop'])?$new_instance['img_crop']:'';
+        $instance['show_img'] = !empty($new_instance['show_img'])?$new_instance['show_img']:'';
         $instance['img_height'] = !empty($new_instance['img_height'])?$new_instance['img_height']:300;
         $instance['post_type'] = !empty($new_instance['post_type'])?$new_instance['post_type']:'any';
         $instance['category'] = !empty($new_instance['category'])?$new_instance['category']:-1;
         $instance['tags'] = !empty($new_instance['tags'])? strip_tags( $new_instance['tags']):-1;
+        $instance['show_excerpt'] = !empty($new_instance['show_excerpt'])?$new_instance['show_excerpt']:'';
+
        
        /* if(!empty($new_instance['tags'])){
             $tempTags = explode(',',sanitize_text_field( $new_instance['tags']));
@@ -114,6 +135,8 @@ class Post_Loop_Widget extends WP_Widget {
         $cols =  isset($instance['cols'])?$instance['cols']:4;
         //image settings 
         $img_crop =  isset($instance['img_crop'])?$instance['img_crop']:'';
+        $show_excerpt =  isset($instance['show_excerpt'])?$instance['show_excerpt']:'';
+        $show_img =  isset($instance['show_img'])?$instance['show_img']:'';
         $img_height =  isset($instance['img_height'])?$instance['img_height']:300;
         $post_type =  isset($instance['post_type'])? $instance['post_type']:'any';
         $category =  isset($instance['category'])? $instance['category']:-1;
@@ -140,13 +163,16 @@ class Post_Loop_Widget extends WP_Widget {
                  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
                  ?>
                  <div  class="col-md-<?=esc_attr($cols)?>"  >
-                 <div class="card mb-4   ">
-                 <?php if(has_post_thumbnail()):?>
+                 <div class="card mb-4 post-loop-card">
+                 <?php if(has_post_thumbnail() && $show_img ==1):?>
                     <img style="<?=$img_style?>" class="card-img-top <?=$img_class?>" src="<?=$image[0]?>">
                  <?php endif;?>
                     <div class="card-body">
+                        <span class="card-subtitle mb-2 text-muted"><?=the_category( ' ')?></span>
                         <h5 class="card-title"><?=the_title()?></h5>
-                        <p class="card-text"><?=the_excerpt()?></p>
+                        <?php if($show_excerpt == 1):?>
+                            <p class="card-text"><?=the_excerpt()?></p>
+                        <?php endif;?>
                     </div>
                 </div>
                 </div>
