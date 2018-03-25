@@ -18,7 +18,8 @@ class Post_Loop_Widget extends WP_Widget {
             'img_crop' => '',
             'img_height' => 300,
             'post_type'=>__('any'),
-            'category'=>-1
+            'category'=>-1,
+            'tags'=>-1
 		];
 		
 		// Parse current settings with defaults
@@ -31,6 +32,7 @@ class Post_Loop_Widget extends WP_Widget {
         $post_types_names = array_merge(['any','posts','pages'], get_post_types( ['public'=>true,'_builtin'=>false], 'names' ));
         $categories = get_categories([ 'orderby' => 'name', 'order' => 'ASC'] ); //get all categories 
         $category_id = $this->get_field_id('category');
+        $tags_id = $this->get_field_id('tags');
         // html template for admin 
         ?>
         <p>
@@ -66,6 +68,11 @@ class Post_Loop_Widget extends WP_Widget {
                 <?php endforeach;?>
             </select>     
         </p>
+        <p>
+            <!-- tags -->
+            <label for=<?=$tags_id?>> <?=__('Display posts of tag(s):')?> </label>
+            <input id='<?=$tags_id?>' name='<?=$this->get_field_name('tags')?>' type='text' value='<?=esc_attr( $tags )?>' placeholder='<?=_e('seperate tags with ","')?>'>            
+        </p>
         <!-- img crop -->
         <p>
             <h4> Featured Image </h4>
@@ -86,6 +93,18 @@ class Post_Loop_Widget extends WP_Widget {
         $instance['img_height'] = !empty($new_instance['img_height'])?$new_instance['img_height']:300;
         $instance['post_type'] = !empty($new_instance['post_type'])?$new_instance['post_type']:'any';
         $instance['category'] = !empty($new_instance['category'])?$new_instance['category']:-1;
+        $instance['tags'] = !empty($new_instance['tags'])? strip_tags( $new_instance['tags']):-1;
+       
+       /* if(!empty($new_instance['tags'])){
+            $tempTags = explode(',',sanitize_text_field( $new_instance['tags']));
+            $i = 0; 
+            while ($tempTags){
+                $tempTags[$i] = trim($tempTags[$i]);
+                $i++;
+            }
+            $instance['tags'] = implode(',',$tempTags);
+        }
+        */
         return $instance;
     }
     function widget( $args, $instance ) {
@@ -97,13 +116,15 @@ class Post_Loop_Widget extends WP_Widget {
         $img_crop =  isset($instance['img_crop'])?$instance['img_crop']:'';
         $img_height =  isset($instance['img_height'])?$instance['img_height']:300;
         $post_type =  isset($instance['post_type'])? $instance['post_type']:'any';
-        $category =  isset($instance['category'])? $instance['category']:'any';
+        $category =  isset($instance['category'])? $instance['category']:-1;
+        $tags =  isset($instance['tags'])? $instance['tags']:-1;
         echo $before_widget.$before_title.$title.$after_title;
         $q_args = array(
             'post_type' => esc_attr( $post_type ),
             'orderby'   => 'date',
             'order'     => 'ASC',
-            'cat'       => $category != -1? $category:''
+            'cat'       => $category != -1? $category:'',
+            'tag'       => $tags != -1? $tags : ''
         );
         $query = new WP_Query( $q_args  );
         echo '<div class="row">';
