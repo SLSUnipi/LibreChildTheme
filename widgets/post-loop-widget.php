@@ -69,6 +69,7 @@ class Post_Loop_Widget extends WP_Widget {
         <!-- img crop -->
         <p>
             <h4> Featured Image </h4>
+            </hr>
 			<input id="<?=$img_crop_id?>" name="<?php echo esc_attr( $this->get_field_name( 'img_crop' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $img_crop ); ?> />
 			<label for="<?=$img_crop_id?>"><?=__( 'Image Crop', 'text_domain' )?></label>
             <label for="<?=$img_height_id?>"><?=__( 'Image Height', 'text_domain' )?></label>
