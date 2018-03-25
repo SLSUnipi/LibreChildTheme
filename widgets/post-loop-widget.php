@@ -14,10 +14,11 @@ class Post_Loop_Widget extends WP_Widget {
         // Output admin widget options form
         $defaults = [
 			'title'    => '',
-            'cols'     => 4,
+            'cols'     => 3,
             'img_crop' => '',
             'img_height' => 300,
-            'post_type'=>'any'
+            'post_type'=>__('any'),
+            'category'=>-1
 		];
 		
 		// Parse current settings with defaults
@@ -27,8 +28,9 @@ class Post_Loop_Widget extends WP_Widget {
         $img_crop_id = $this->get_field_id('img_crop');
         $img_height_id = $this->get_field_id('img_height');
         $post_type_id = $this->get_field_id('post_type');
-        $post_types_names = get_post_types( '', 'names' );
-        array_push( $post_types_names, 'any');
+        $post_types_names = array_merge(['any','posts','pages'], get_post_types( ['public'=>true,'_builtin'=>false], 'names' ));
+        $categories = get_categories([ 'orderby' => 'name', 'order' => 'ASC'] ); //get all categories 
+        $category_id = $this->get_field_id('category');
         // html template for admin 
         ?>
         <p>
@@ -38,7 +40,7 @@ class Post_Loop_Widget extends WP_Widget {
         </p>
         <p>
             <!-- columns -->
-            <label for ='<?$cols_id?>'> <?=__('Columns:')?> </label>
+            <label for ='<?$cols_id?>'> <?=__('col-md:')?> </label>
             <select id='<?$cols_id?>' name='<?=$this->get_field_name('cols')?>'>
                 <?php for($col=1; $col<=12; $col++):?>
                   <option value='<?=$col?>' <?= $col == $cols?'selected':''?> > <?=$col?> </option>
@@ -54,6 +56,16 @@ class Post_Loop_Widget extends WP_Widget {
                 <?php endforeach;?>
             </select>     
         </p>
+        <p>
+        <!-- post category -->
+        <label for ='<?=$category_id?>'> <?=__('Display posts of category:')?> </label>
+            <select id='<?$category_id?>' name='<?=$this->get_field_name('category')?>'>
+                <option value="-1" <?=$category == -1?'selected':''; ?>><?=__('any')?> </option>
+                <?php foreach($categories as $category_obj):?>
+                  <option value='<?=esc_attr( $category_obj->term_id)?>' <?= $category_obj->term_id == $category?'selected':''?> > <?=esc_attr( $category_obj->name )?> </option>
+                <?php endforeach;?>
+            </select>     
+        </p>
         <!-- img crop -->
         <p>
             <h4> Featured Image </h4>
@@ -66,12 +78,13 @@ class Post_Loop_Widget extends WP_Widget {
         //end of html template for admin
     }
     function update( $new_instance, $old_instance ) {
-        $instance = $old_instance;
+        $instance = $old_instance; 
         $instance['title'] = !empty($new_instance['title'])? strip_tags($new_instance['title']) :'';
         $instance['cols'] = !empty($new_instance['cols'])?$new_instance['cols']:4;
         $instance['img_crop'] = !empty($new_instance['img_crop'])?$new_instance['img_crop']:'';
         $instance['img_height'] = !empty($new_instance['img_height'])?$new_instance['img_height']:300;
-        $instance['post_type'] = !empty($new_instance['post_type'])?$new_instance['post_type']:300;
+        $instance['post_type'] = !empty($new_instance['post_type'])?$new_instance['post_type']:'any';
+        $instance['category'] = !empty($new_instance['category'])?$new_instance['category']:-1;
         return $instance;
     }
     function widget( $args, $instance ) {
@@ -83,11 +96,13 @@ class Post_Loop_Widget extends WP_Widget {
         $img_crop =  isset($instance['img_crop'])?$instance['img_crop']:'';
         $img_height =  isset($instance['img_height'])?$instance['img_height']:300;
         $post_type =  isset($instance['post_type'])? $instance['post_type']:'any';
+        $category =  isset($instance['category'])? $instance['category']:'any';
         echo $before_widget.$before_title.$title.$after_title;
         $q_args = array(
             'post_type' => esc_attr( $post_type ),
             'orderby'   => 'date',
             'order'     => 'ASC',
+            'cat'       => $category != -1? $category:''
         );
         $query = new WP_Query( $q_args  );
         echo '<div class="row">';
