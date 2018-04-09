@@ -139,7 +139,8 @@ class Post_Loop_Widget extends WP_Widget {
         $post_type =  isset($instance['post_type'])? $instance['post_type']:'any';
         $category =  isset($instance['category'])? $instance['category']:-1;
         $tags =  isset($instance['tags'])? $instance['tags']:-1;
-        echo $before_widget.$before_title.$title.$after_title;
+        //the title
+        echo $before_widget.'<div class="col-12">'.$before_title.$title.$after_title.'</div>';
         $q_args = array(
             'post_type' =>  $post_type,
             'orderby'   => 'date',
@@ -148,7 +149,6 @@ class Post_Loop_Widget extends WP_Widget {
             'tag'       => $tags != -1? $tags : ''
         );
         $query = new WP_Query( $q_args  );
-        echo '<div class="row">';
          if ( $query->have_posts() ){ 
              $img_class = '';
              $img_style = '';
@@ -161,7 +161,7 @@ class Post_Loop_Widget extends WP_Widget {
                  $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
                  ?>
                  <div  class="col-md-<?=esc_attr($cols)?>"  >
-                 <div class="card mb-4   ">
+                 <div class="card mb-4">
                  <?php if(has_post_thumbnail() && $show_img ==1):?>
                     <img style="<?=$img_style?>" class="card-img-top <?=$img_class?>" src="<?=$image[0]?>">
                  <?php endif;?>
@@ -177,7 +177,6 @@ class Post_Loop_Widget extends WP_Widget {
                  <?php
              } 
         }     
-         echo '</div>';
                 echo $after_widget;
     }
 }

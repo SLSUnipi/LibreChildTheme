@@ -26,21 +26,25 @@ function theme_enqueue_styles() {
 
 
 //register a full width sidebar before the content.
-function before_content_init(){
-    register_sidebar([
-        'name'=>'Before Content full width widget area',
-        'id'=>'before_content_fullwidth',
-        'before_widget'=>'<div>',
-        'after_widget'=>'</div>',
-        'before_title'=>'<h2 class="card-">'
+function custom_sidebars() {
 
-    ]);
+	$args = array(
+		'id'            => 'before-content',
+        'name'          => __( 'Before Content Full Width', 'text_domain' ),
+        'before_widget'=>'<div class="row m-2 mt-4">',
+        'after_widget'=>'</div>',
+        'before_title'=>'<h2>',
+        'after_title'=>'</h2><hr>'
+	);
+	register_sidebar( $args );
 }
-add_action('widget_init','before_content_init');
+add_action( 'widgets_init', 'custom_sidebars' );
+
 
 function add_widgets(){
     register_widget( 'Post_Loop_Widget' );
 }
+
 add_action( 'widgets_init', 'add_widgets');
 // Register and load the widget
 require_once 'widgets/post-loop-widget.php';
